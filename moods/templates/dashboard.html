@@ -1,45 +1,40 @@
-<h1>Dashboard</h1>
+{% extends "base.html" %}
+{% block title %}Dashboard - Mood Logger{% endblock %}
 
-<h2>Weekly Summary</h2>
-<p>Average Stress: {{ avg_stress }}</p>
-<p>Average Sleep: {{ avg_sleep }}</p>
-<p>Most Common Mood: {{ most_common_mood|default:"None" }}</p>
-
- <a href="{% url 'dashboard' %}"><button type="button">Back to Dashboard</button></a>
- <a href="{% url 'graphs' %}"><button type="button">View Analytics</button></a>
-
-
-<h2>History</h2>
-<input type="text" id="searchInput" placeholder="Search by mood, stress, sleep, or notes" style="width: 50%; padding: 8px; margin-bottom: 10px;">
-
-<div id="entriesContainer">
-{% for entry in entries %}
-    <div class="entry-card" data-mood="{{ entry.mood }}" data-note="{{ entry.note|lower }}" data-stress="{{ entry.stress_level }}" data-sleep="{{ entry.sleep_hours }}">
-            <a href="{% url 'update_mood' entry.id %}"><button type="button">Edit</button></a>
-
-        <p>{{ entry.created_at }}</p>
-        <p>{{ entry.mood }} | Stress: {{ entry.stress_level }} | Sleep: {{ entry.sleep_hours }}</p>
-        <p>{{ entry.note }}</p>
+{% block content %}
+  <div class="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-white p-4 rounded-lg shadow">
+      <h3 class="text-sm text-slate-500">Weekly Summary</h3>
+      <div class="mt-2 text-lg font-medium">Average Stress: {{ avg_stress }}</div>
+      <div class="mt-1 text-lg font-medium">Average Sleep: {{ avg_sleep }}</div>
+      <div class="mt-1 text-lg font-medium">Most Common Mood: {{ most_common_mood|default:"None" }}</div>
     </div>
-{% endfor %}
-</div>
+    <div class="md:col-span-2 bg-white p-4 rounded-lg shadow">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">History</h3>
+        <a href="{% url 'graphs' %}" class="text-sm text-sky-600 hover:underline">View Analytics</a>
+      </div>
 
-<script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        const searchTerm = this.value.toLowerCase();
-        const entries = document.querySelectorAll('.entry-card');
-        
-        entries.forEach(entry => {
-            const mood = entry.getAttribute('data-mood');
-            const note = entry.getAttribute('data-note');
-            const stress = entry.getAttribute('data-stress');
-            const sleep = entry.getAttribute('data-sleep');
-            
-            if (mood.includes(searchTerm) || note.includes(searchTerm) || stress.includes(searchTerm) || sleep.includes(searchTerm)) {
-                entry.style.display = 'block';
-            } else {
-                entry.style.display = 'none';
-            }
-        });
-    });
-</script>
+      <div class="mt-4" x-data="{q: ''}">
+        <input x-model="q" type="text" placeholder="Search by mood, stress, sleep, or notes" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-sky-300"/>
+
+        <div class="mt-4 space-y-3">
+          {% for entry in entries %}
+            <div class="entry-card bg-slate-50 p-3 rounded-lg border" x-show="q === '' || '{{ entry.mood }}'.toLowerCase().includes(q.toLowerCase()) || ('{{ entry.note|default:"" }}').toLowerCase().includes(q.toLowerCase()) || '{{ entry.stress_level }}'.includes(q) || '{{ entry.sleep_hours }}'.includes(q)">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="text-sm text-slate-500">{{ entry.created_at }}</div>
+                  <div class="mt-1 font-medium">{{ entry.mood }} <span class="text-sm text-slate-400">| Stress: {{ entry.stress_level }} | Sleep: {{ entry.sleep_hours }}</span></div>
+                  <div class="mt-2 text-sm text-slate-700">{{ entry.note }}</div>
+                </div>
+                <div class="ml-4">
+                  <a href="{% url 'update_mood' entry.id %}" class="inline-block bg-sky-600 text-white px-3 py-1 rounded hover:bg-sky-700">Edit</a>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

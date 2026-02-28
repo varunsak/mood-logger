@@ -1,80 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sleep & Stress Analytics</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% block title %}Analytics - Mood Logger{% endblock %}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block content %}
+<div class="bg-white p-6 rounded-lg shadow max-w-4xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-6 text-center">Weekly Sleep & Stress Overview</h2>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
-            padding: 40px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .chart-container {
-            margin-bottom: 50px;
-        }
-
-        canvas {
-            max-height: 400px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>Weekly Sleep & Stress Overview</h2>
-
-    <div class="chart-container">
-        <h3>Sleep Hours</h3>
-        <canvas id="sleepChart"></canvas>
+    <div class="chart-container mb-8">
+        <h3 class="text-lg font-medium mb-2">Sleep Hours</h3>
+        <canvas id="sleepChart" class="w-full"></canvas>
     </div>
 
-    <div class="chart-container">
-        <h3>Stress Levels</h3>
-        <canvas id="stressChart"></canvas>
-
-    <div class ='chart-container'>
-        <h4> Productivity Levels </h4>
-        <canvas id="productivityChart"></canvas>
+    <div class="chart-container mb-8">
+        <h3 class="text-lg font-medium mb-2">Stress Levels</h3>
+        <canvas id="stressChart" class="w-full"></canvas>
     </div>
+
+    <div class="chart-container mb-8">
+        <h3 class="text-lg font-medium mb-2">Productivity Levels</h3>
+        <canvas id="productivityChart" class="w-full"></canvas>
+    </div>
+
+    <div class="chart-container mb-8">
+        <h3 class="text-lg font-medium mb-2">Mood Distribution</h3>
+        <canvas id="moodChart" class="w-full"></canvas>
+    </div>
+
+    <div class="flex justify-between mt-6">
+        <a href="{% url 'add_mood' %}" class="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700">Add Mood</a>
+        <a href="{% url 'dashboard' %}" class="text-slate-600 hover:underline">Back to Dashboard</a>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<canvas id="sleepChart"></canvas>
-<canvas id="stressChart"></canvas>
-<canvas id ="productivityChart"></canvas>
-<canvas id="moodChart"></canvas>
-
-<div>
-    <a href="{% url 'add_mood' %}">
-    <button type="button">Add Mood</button>
-</a>
-
-    <a href="{% url 'dashboard' %}">
-    <button type="button">Back to Dashboard</button>
-</a>
-    </button>
-</div>
-
 <script>
     const chartData = JSON.parse('{{ data|escapejs }}');
 
@@ -123,17 +82,15 @@
                 y: { beginAtZero: true }
             }
         }
-        
     });
-
 
     new Chart(document.getElementById('productivityChart'),{
         type: 'line',
         data: {
-            labels: sleepLabels,
+            labels: productivityLabels,
             datasets: [{
                 label: 'Productivity',
-                data: sleepData,
+                data: productivityData,
                 fill: false,
                 tension: 0.3
             }]
@@ -146,7 +103,6 @@
         }
     });
 
-    
     new Chart(document.getElementById('moodChart'),{
         type: 'bar',
         data: {
@@ -165,8 +121,5 @@
             }
         }
     });
-
 </script>
-
-</body>
-</html>
+{% endblock %}
