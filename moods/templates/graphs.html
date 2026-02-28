@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sleep & Stress Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .chart-container {
+            margin-bottom: 50px;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Weekly Sleep & Stress Overview</h2>
+
+    <div class="chart-container">
+        <h3>Sleep Hours</h3>
+        <canvas id="sleepChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h3>Stress Levels</h3>
+        <canvas id="stressChart"></canvas>
+
+    <div class ='chart-container'>
+        <h4> Productivity Levels </h4>
+        <canvas id="productivityChart"></canvas>
+    </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<canvas id="sleepChart"></canvas>
+<canvas id="stressChart"></canvas>
+<canvas id ="productivityChart"></canvas>
+<canvas id="moodChart"></canvas>
+
+<div>
+    <a href="{% url 'add_mood' %}">
+    <button type="button">Add Mood</button>
+</a>
+
+    <a href="{% url 'dashboard' %}">
+    <button type="button">Back to Dashboard</button>
+</a>
+    </button>
+</div>
+
+<script>
+    const chartData = JSON.parse('{{ data|escapejs }}');
+
+    const sleepLabels = chartData.dates;
+    const sleepData = chartData.sleepData;
+    const stressLabels = chartData.dates;
+    const stressData = chartData.stressData;
+    const productivityData = chartData.productivityData;
+    const productivityLabels = chartData.dates;
+    const moods = chartData.moods;
+    const moodLabels = chartData.moodCounts;
+
+    new Chart(document.getElementById('sleepChart'), {
+        type: 'line',
+        data: {
+            labels: sleepLabels,
+            datasets: [{
+                label: 'Sleep Hours',
+                data: sleepData,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    new Chart(document.getElementById('stressChart'), {
+        type: 'line',
+        data: {
+            labels: stressLabels,
+            datasets: [{
+                label: 'Stress Level',
+                data: stressData,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+        
+    });
+
+
+    new Chart(document.getElementById('productivityChart'),{
+        type: 'line',
+        data: {
+            labels: sleepLabels,
+            datasets: [{
+                label: 'Productivity',
+                data: sleepData,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    
+    new Chart(document.getElementById('moodChart'),{
+        type: 'bar',
+        data: {
+            labels: moods,
+            datasets: [{
+                label: 'Mood Count',
+                data: moodLabels,
+                fill: false,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+</script>
+
+</body>
+</html>

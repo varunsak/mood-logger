@@ -1,0 +1,45 @@
+<h1>Dashboard</h1>
+
+<h2>Weekly Summary</h2>
+<p>Average Stress: {{ avg_stress }}</p>
+<p>Average Sleep: {{ avg_sleep }}</p>
+<p>Most Common Mood: {{ most_common_mood|default:"None" }}</p>
+
+ <a href="{% url 'dashboard' %}"><button type="button">Back to Dashboard</button></a>
+ <a href="{% url 'graphs' %}"><button type="button">View Analytics</button></a>
+
+
+<h2>History</h2>
+<input type="text" id="searchInput" placeholder="Search by mood, stress, sleep, or notes" style="width: 50%; padding: 8px; margin-bottom: 10px;">
+
+<div id="entriesContainer">
+{% for entry in entries %}
+    <div class="entry-card" data-mood="{{ entry.mood }}" data-note="{{ entry.note|lower }}" data-stress="{{ entry.stress_level }}" data-sleep="{{ entry.sleep_hours }}">
+            <a href="{% url 'update_mood' entry.id %}"><button type="button">Edit</button></a>
+
+        <p>{{ entry.created_at }}</p>
+        <p>{{ entry.mood }} | Stress: {{ entry.stress_level }} | Sleep: {{ entry.sleep_hours }}</p>
+        <p>{{ entry.note }}</p>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+        const entries = document.querySelectorAll('.entry-card');
+        
+        entries.forEach(entry => {
+            const mood = entry.getAttribute('data-mood');
+            const note = entry.getAttribute('data-note');
+            const stress = entry.getAttribute('data-stress');
+            const sleep = entry.getAttribute('data-sleep');
+            
+            if (mood.includes(searchTerm) || note.includes(searchTerm) || stress.includes(searchTerm) || sleep.includes(searchTerm)) {
+                entry.style.display = 'block';
+            } else {
+                entry.style.display = 'none';
+            }
+        });
+    });
+</script>

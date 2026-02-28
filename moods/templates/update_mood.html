@@ -1,0 +1,24 @@
+<h1>Update Mood Entry</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <select name="mood">
+        <option value="happy" {% if entry.mood == 'happy' %}selected{% endif %}>Happy</option>
+        <option value="neutral" {% if entry.mood == 'neutral' %}selected{% endif %}>Neutral</option>
+        <option value="sad" {% if entry.mood == 'sad' %}selected{% endif %}>Sad</option>
+        <option value="anxious" {% if entry.mood == 'anxious' %}selected{% endif %}>Anxious</option>
+        <option value="angry" {% if entry.mood == 'angry' %}selected{% endif %}>Angry</option>
+        <option value="excited" {% if entry.mood == 'excited' %}selected{% endif %}>Excited</option>
+        <option value="tired" {% if entry.mood == 'tired' %}selected{% endif %}>Tired</option>
+    </select>
+
+    <input type="number" name="stress_level" placeholder="Stress (1-10)" min="1" max="10" value="{{ entry.stress_level }}" size="50" style="width: 100%; padding: 8px;">
+    <input type="number" step="0.1" name="sleep_hours" placeholder="Sleep Hours" min="0" max="24" value="{{ entry.sleep_hours }}" size="50" style="width: 100%; padding: 8px;">
+    <textarea name="note" placeholder="Optional note" cols="50" rows="6" style="width: 100%; padding: 8px;">{{ entry.note }}</textarea>
+    <textarea name="productivity" placeholder="Productivity (1-10)" cols="50" rows="6" style="width: 100%; padding: 8px;">{{ entry.productivity }}</textarea>
+
+
+    <button type="button" onclick="window.location.href='{% url 'dashboard' %}'">Back to Dashboard</button>
+    <button type="submit">Save</button>
+</form>

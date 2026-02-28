@@ -1,0 +1,22 @@
+<h1>Add Mood</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <select name="mood">
+        <option value="happy">Happy</option>
+        <option value="neutral">Neutral</option>
+        <option value="sad">Sad</option>
+        <option value="anxious">Anxious</option>
+        <option value="angry">Angry</option>
+        <option value="excited">Excited</option>
+        <option value="tired">Tired</option>
+    </select>
+
+    <input type="number" name="stress_level" placeholder="Stress (1-10)" min="1" max="10" size="50" style="width: 100%; padding: 8px;">
+    <input type="number" step="0.1" name="sleep_hours" placeholder="Sleep Hours" min="0" max="24" size="50" style="width: 100%; padding: 8px;">
+    <textarea name="note" placeholder="Optional note" cols="50" rows="6" style="width: 100%; padding: 8px;"></textarea>
+    <textarea name="productivity" placeholder="Productivity (1-10)" cols="50" rows="6" style="width: 100%; padding: 8px;"></textarea>
+    <button type="submit">Save</button>
+    <a href="{% url 'dashboard' %}"><button type="button">Back to Dashboard</button></a>
+</form>
